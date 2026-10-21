@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { defineConfig, type PluginOption } from "vite";
 import react from "@vitejs/plugin-react";
 
@@ -11,7 +11,10 @@ const deskPluginFile = path.join(root, "desk-plugin.ts");
 export default defineConfig(async () => {
   const plugins: PluginOption[] = [react()];
   if (fs.existsSync(deskPluginFile)) {
-    const { deskPlugin } = await import("./desk-plugin");
+    // A variable keeps esbuild from resolving this while it bundles the config.
+    // On GitHub the file is gitignored, so a literal import("./desk-plugin") fails the build.
+    const pluginUrl = pathToFileURL(deskPluginFile).href;
+    const { deskPlugin } = await import(pluginUrl);
     plugins.push(deskPlugin());
   }
   const inDocker = Boolean(process.env.DESK_HOST);
