@@ -2,3 +2,13 @@ node_modules
 dist
 .DS_Store
 .cursor
+
+# Local writing desk. Not part of the published site.
+.dockerignore
+Dockerfile
+docker-compose.yml
+docker-entrypoint.sh
+desk-plugin.ts
+src/Desk.tsx
+src/desk.css
+src/editor/

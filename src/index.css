@@ -45,9 +45,11 @@ button, a { font: inherit; }
 }
 
 .page .post,
-.page > main {
+.story-copy {
   max-width: 680px;
 }
+
+.diagram-slot { margin: 28px 0 56px; }
 
 .home-layout {
   width: min(1040px, calc(100% - 48px));
@@ -162,6 +164,13 @@ button, a { font: inherit; }
   font-weight: 700;
   letter-spacing: -0.04em;
   font-size: 28px;
+}
+
+.desk-link {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 14px;
+  text-decoration: none;
 }
 
 .post { padding-top: 36px; }
@@ -738,6 +747,49 @@ h1 {
   .split,
   .facts { grid-template-columns: 1fr; }
 }
+
+.prose blockquote {
+  margin: 0 0 1.15em;
+  padding-left: 1em;
+  border-left: 3px solid #e4e4e4;
+  color: var(--muted);
+}
+
+.prose pre {
+  margin: 0 0 1.15em;
+  padding: 12px 14px;
+  overflow: auto;
+  border-radius: 8px;
+  background: #f6f6f6;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.prose :not(pre) > code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.86em;
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  background: #f3f3f3;
+}
+
+.prose img { max-width: 100%; height: auto; }
+
+.prose iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+}
+
+.rich-html { display: contents; }
+
+.rich-list {
+  margin: 0.2em 0 1em;
+  padding-left: 1.3em;
+}
+
+.rich-list li { margin: 0.2em 0; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

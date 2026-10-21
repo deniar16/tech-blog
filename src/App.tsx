@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import EngStack from "./EngStack";
+import { Desk } from "@desk";
+import { StoryBody } from "./StoryBody";
 import {
   categoryCount,
   categoryTree,
@@ -152,18 +153,18 @@ function Article({ slug }: { slug: string }) {
     );
   }
 
-  const Body = post.Component;
-
   return (
     <main>
-      <article className="post prose">
-        <a className="back" href="#/">
-          ← All stories
-        </a>
-        <h1>{post.title}</h1>
-        <p className="lede">{post.lede}</p>
-        <Byline post={post} />
-        <Body />
+      <article className="story">
+        <div className="post prose">
+          <a className="back" href="#/">
+            ← All stories
+          </a>
+          <h1>{post.title}</h1>
+          <p className="lede">{post.lede}</p>
+          <Byline post={post} />
+        </div>
+        <StoryBody body={post.body} />
       </article>
     </main>
   );
@@ -172,8 +173,8 @@ function Article({ slug }: { slug: string }) {
 export default function App() {
   const path = usePath();
   const slug = path === "/" ? "" : path.replace(/^\//, "");
+  const writing = slug === "write";
   const current = stories.find((story) => story.slug === slug);
-  const wide = current?.wide === true;
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
 
@@ -185,8 +186,8 @@ export default function App() {
   });
 
   useEffect(() => {
-    document.title = current ? `${current.title} — Notes` : "Stories — Notes";
-  }, [current]);
+    document.title = writing ? "Write — Notes" : current ? `${current.title} — Notes` : "Stories — Notes";
+  }, [writing, current]);
 
   return (
     <div className="shell">
@@ -195,9 +196,16 @@ export default function App() {
           <a className="mark" href="#/">
             Notes
           </a>
+          {import.meta.env.DEV && (
+            <a className="desk-link" href="#/write">
+              Write
+            </a>
+          )}
         </div>
       </header>
-      {slug === "" ? (
+      {writing ? (
+        <Desk />
+      ) : slug === "" ? (
         <div className="home-layout">
           <Home visible={visible} />
           <Rail
@@ -210,11 +218,6 @@ export default function App() {
       ) : (
         <div className="page">
           <Article slug={slug} />
-        </div>
-      )}
-      {wide && (
-        <div className="breakout">
-          <EngStack />
         </div>
       )}
     </div>

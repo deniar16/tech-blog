@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { pillars, type Pillar } from "./pillars";
+import { pillars as catalog, type Pillar } from "./pillars";
 
 function tone(pillar: Pillar): React.CSSProperties {
   return {
@@ -93,56 +93,66 @@ function StackFlow({
   step: number;
   onPick: (index: number) => void;
 }) {
+  const labels = pillar.steps;
   return (
     <div className="flow">
-      <Node label={pillar.topLeft} on={step === 0} onPick={() => onPick(0)} />
+      <Node label={labels[0] ?? ""} on={step === 0} onPick={() => onPick(0)} />
       <Arrow dir="right" hot={step === 1} />
-      <Node label={pillar.topRight} on={step === 1} onPick={() => onPick(1)} />
+      <Node label={labels[1] ?? ""} on={step === 1} onPick={() => onPick(1)} />
 
       {pillar.loopBack ? <Arrow dir="up" hot={step === 0} /> : <span className="gap" />}
       <span className="gap" />
       <Arrow dir="down" hot={step === 2} />
 
-      <Node label={pillar.lowerLeft} on={step === 3} onPick={() => onPick(3)} />
+      <Node label={labels[3] ?? ""} on={step === 3} onPick={() => onPick(3)} />
       <Arrow dir="left" hot={step === 3} />
-      <Node label={pillar.lowerRight} on={step === 2} onPick={() => onPick(2)} />
+      <Node label={labels[2] ?? ""} on={step === 2} onPick={() => onPick(2)} />
 
       <span className="gap" />
       <Arrow dir="down" hot={step === 4} />
       <span className="gap" />
 
-      <Node label={pillar.foot} on={step === 4} wide onPick={() => onPick(4)} />
+      <Node label={labels[4] ?? ""} on={step === 4} wide onPick={() => onPick(4)} />
     </div>
   );
 }
 
-function LoopFlow({ step, onPick }: { step: number; onPick: (index: number) => void }) {
+function LoopFlow({
+  pillar,
+  step,
+  onPick,
+}: {
+  pillar: Pillar;
+  step: number;
+  onPick: (index: number) => void;
+}) {
+  const labels = pillar.steps;
   return (
     <div className="flow flow-loop">
-      <Node label="Goal" on={step === 0} onPick={() => onPick(0)} />
+      <Node label={labels[0] ?? ""} on={step === 0} onPick={() => onPick(0)} />
       <Arrow dir="right" hot={step === 1} />
-      <Node label="Plan" on={step === 1} onPick={() => onPick(1)} />
+      <Node label={labels[1] ?? ""} on={step === 1} onPick={() => onPick(1)} />
 
       <span className="gap" />
       <span className="gap" />
       <Arrow dir="down" hot={step === 2} />
 
-      <Node label="Review" on={step === 3} onPick={() => onPick(3)} />
+      <Node label={labels[3] ?? ""} on={step === 3} onPick={() => onPick(3)} />
       <Arrow dir="left" hot={step === 3} />
-      <Node label="Act" on={step === 2} onPick={() => onPick(2)} />
+      <Node label={labels[2] ?? ""} on={step === 2} onPick={() => onPick(2)} />
 
       <Arrow dir="down" hot={step === 4} />
       <span className="gap" />
       <span className="gap" />
 
-      <Node label="Retry or Stop" on={step === 4} onPick={() => onPick(4)} />
+      <Node label={labels[4] ?? ""} on={step === 4} onPick={() => onPick(4)} />
       <Arrow dir="right" hot={step === 5} />
-      <Node label="Final Output" on={step === 5} onPick={() => onPick(5)} />
+      <Node label={labels[5] ?? ""} on={step === 5} onPick={() => onPick(5)} />
     </div>
   );
 }
 
-export default function EngStack() {
+export default function EngStack({ pillars = catalog }: { pillars?: Pillar[] }) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [useKey, setUseKey] = useState<string | null>(null);
   const [step, setStep] = useState(0);
@@ -269,7 +279,7 @@ export default function EngStack() {
                     })}
                   </ul>
                   {pillar.layout === "loop" ? (
-                    <LoopFlow step={shownStep} onPick={(index) => pickStep(pillar.id, index)} />
+                    <LoopFlow pillar={pillar} step={shownStep} onPick={(index) => pickStep(pillar.id, index)} />
                   ) : (
                     <StackFlow
                       pillar={pillar}

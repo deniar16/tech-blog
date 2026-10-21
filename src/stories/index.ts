@@ -1,4 +1,4 @@
-import type { ComponentType } from "react";
+import { hasDiagram, parseStory } from "./parse";
 
 export type StoryMeta = {
   slug: string;
@@ -14,7 +14,8 @@ export type StoryMeta = {
 export type Story = StoryMeta & {
   categoryPath: string;
   categoryLabel: string;
-  Component: ComponentType;
+  body: string;
+  filePath: string;
 };
 
 export type CategoryNode = {
@@ -29,21 +30,31 @@ function segmentLabel(segment: string) {
   return LABELS[segment] ?? segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " ");
 }
 
-const modules = import.meta.glob("./**/*.tsx", { eager: true }) as Record<
-  string,
-  { meta: StoryMeta; default: ComponentType }
->;
+const modules = import.meta.glob("./**/*.md", {
+  eager: true,
+  query: "?raw",
+  import: "default",
+}) as Record<string, string>;
 
 export const stories: Story[] = Object.entries(modules)
-  .map(([path, module]) => {
-    const parts = path.replace(/^\.\//, "").replace(/\.tsx$/, "").split("/");
+  .map(([path, source]) => {
+    const fields = parseStory(source);
+    const parts = path.replace(/^\.\//, "").replace(/\.md$/, "").split("/");
     parts.pop();
     const categoryPath = parts.join("/");
     return {
-      ...module.meta,
+      slug: fields.slug,
+      title: fields.title,
+      date: fields.date,
+      published: fields.published,
+      minutes: fields.minutes,
+      lede: fields.lede,
+      sample: fields.sample,
+      wide: fields.wide || hasDiagram(fields.body),
       categoryPath,
       categoryLabel: parts.map(segmentLabel).join(" / "),
-      Component: module.default,
+      body: fields.body,
+      filePath: path.replace(/^\.\//, ""),
     };
   })
   .sort((a, b) => b.published.localeCompare(a.published));
@@ -51,7 +62,7 @@ export const stories: Story[] = Object.entries(modules)
 export function categoryTree(items: Story[] = stories): CategoryNode[] {
   const roots: CategoryNode[] = [];
   for (const story of items) {
-    const parts = story.categoryPath.split("/");
+    const parts = story.categoryPath.split("/").filter(Boolean);
     let level = roots;
     let id = "";
     for (const part of parts) {

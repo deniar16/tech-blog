@@ -6,6 +6,11 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@desk": ["src/write-desk.tsx"]
+    },
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
