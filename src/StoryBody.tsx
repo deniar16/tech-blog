@@ -1,4 +1,5 @@
 import EngStack from "./EngStack";
+import OutboxFlow from "./OutboxMock";
 import { sanitizeHtml } from "./stories/sanitize";
 import { pillars as catalog } from "./pillars";
 import { Figure, Steps } from "./story-ui";
@@ -12,7 +13,7 @@ export function StoryBody({ body }: { body: string }) {
         if (piece.kind === "diagram") {
           return (
             <div className="diagram-slot" key={index}>
-              <EngStack pillars={piece.pillars ?? catalog} />
+              {piece.id === "outbox" ? <OutboxFlow /> : <EngStack pillars={piece.pillars ?? catalog} />}
             </div>
           );
         }

@@ -157,9 +157,6 @@ function Article({ slug }: { slug: string }) {
     <main>
       <article className="story">
         <div className="post prose">
-          <a className="back" href="#/">
-            ← All stories
-          </a>
           <h1>{post.title}</h1>
           <p className="lede">{post.lede}</p>
           <Byline post={post} />

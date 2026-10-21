@@ -22,6 +22,7 @@ Why is this pattern commonly used? Because the implementation is quite simple, l
 
 Let's look at an order flow, when a user asks to mark an order as PAID.
 
-<ol><li>The order service marks the order as PAID and may update some other tables.</li><li>It puts the payload that needs to be sent into the outbox table.</li><li style="padding-left:3em" data-indent="1">If the save fails on one or two tables, the transaction rolls back. Nothing is stored or updated. The order row and the outbox row disappear, so the worker does not send an event.</li><li style="padding-left:3em" data-indent="1">If the save succeeds, the order data and the new outbox row are saved together.</li><li style="padding-left:3em" data-indent="1">The worker, either the scheduler or the CDC, reads the data and sends it to the event. I usually use Kafka. If the worker fails to send it, the worker can retry later. The event data is not deleted.</li></ol>
+:::diagram outbox
+:::
 
 **A gotcha:** because CDC, the scheduler, or Kafka can retry and produce more than one message, the consumer must recognize the repeated message, so a second delivery does not take the payment again.
