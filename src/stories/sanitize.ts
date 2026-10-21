@@ -10,7 +10,54 @@ export function sanitizeHtml(html: string) {
     const clean = cleanNode(node);
     if (clean) holder.append(clean);
   }
+  nestIndentedLists(holder);
   return holder.innerHTML;
+}
+
+function nestIndentedLists(root: HTMLElement) {
+  for (const list of [...root.querySelectorAll("ol, ul")]) {
+    const items = [...list.children].filter((el): el is HTMLElement => el.tagName === "LI");
+    if (!items.some((item) => Number(item.getAttribute("data-indent") || 0) > 0)) continue;
+    const tag = list.tagName.toLowerCase();
+    const roots: ListNode[] = [];
+    const stack: ListNode[] = [];
+    for (const item of items) {
+      const indent = Number(item.getAttribute("data-indent") || 0);
+      item.removeAttribute("data-indent");
+      stripIndentPadding(item);
+      const node: ListNode = { item, indent, children: [] };
+      while (stack.length && stack[stack.length - 1].indent >= indent) stack.pop();
+      if (stack.length) stack[stack.length - 1].children.push(node);
+      else roots.push(node);
+      stack.push(node);
+    }
+    const fresh = document.createElement(tag);
+    appendNested(fresh, roots, tag);
+    list.replaceWith(fresh);
+  }
+}
+
+type ListNode = { item: HTMLElement; indent: number; children: ListNode[] };
+
+function appendNested(parent: HTMLElement, nodes: ListNode[], tag: string) {
+  for (const node of nodes) {
+    if (node.children.length) {
+      const nested = document.createElement(tag);
+      appendNested(nested, node.children, tag);
+      node.item.append(nested);
+    }
+    parent.append(node.item);
+  }
+}
+
+function stripIndentPadding(item: HTMLElement) {
+  const style = (item.getAttribute("style") ?? "")
+    .split(";")
+    .map((part) => part.trim())
+    .filter((part) => part && part.split(":")[0]?.trim().toLowerCase() !== "padding-left")
+    .join(";");
+  if (style) item.setAttribute("style", style);
+  else item.removeAttribute("style");
 }
 
 function cleanNode(node: Node): Node | null {

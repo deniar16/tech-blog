@@ -144,9 +144,8 @@ button, a { font: inherit; }
   position: sticky;
   top: 0;
   z-index: 2;
-  background: rgba(255, 255, 255, 0.92);
+  background: #fff;
   border-bottom: 1px solid var(--line);
-  backdrop-filter: blur(8px);
 }
 
 .mast-inner {
@@ -783,6 +782,31 @@ h1 {
 }
 
 .rich-html { display: contents; }
+
+.prose ol,
+.prose ul {
+  margin: 0.2em 0 1.15em;
+  padding-left: 1.5em;
+}
+
+.prose ol { list-style-type: decimal; }
+.prose ol ol { list-style-type: lower-alpha; }
+.prose ol ol ol { list-style-type: lower-roman; }
+.prose ol ol ol ol { list-style-type: decimal; }
+.prose ol ol ol ol ol { list-style-type: lower-alpha; }
+.prose ol ol ol ol ol ol { list-style-type: lower-roman; }
+
+.prose ul,
+.prose ul ul,
+.prose ul ul ul { list-style-type: disc; }
+
+.prose li { margin: 0.35em 0; }
+
+.prose li > ol,
+.prose li > ul {
+  margin: 0.2em 0 0.1em;
+  padding-left: 3em;
+}
 
 .rich-list {
   margin: 0.2em 0 1em;
