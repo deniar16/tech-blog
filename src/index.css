@@ -49,6 +49,27 @@ button, a { font: inherit; }
   max-width: 680px;
 }
 
+.home-layout .post,
+.home-layout .story-copy,
+.home-layout .lede {
+  max-width: none;
+}
+
+@media (min-width: 861px) {
+  .home-layout .lede,
+  .home-layout .story-copy {
+    text-align: justify;
+  }
+}
+
+.home-layout .story h1,
+.home-layout .story h2,
+.home-layout .story h3,
+.home-layout .byline,
+.home-layout .back {
+  text-align: left;
+}
+
 .diagram-slot { margin: 28px 0 56px; }
 
 .home-layout {

@@ -216,8 +216,20 @@ export default function App() {
           />
         </div>
       ) : (
-        <div className="page">
+        <div className="home-layout">
           <Article slug={slug} />
+          <Rail
+            query={query}
+            category={category}
+            onQuery={(value) => {
+              setQuery(value);
+              if (slug !== "") window.location.hash = "#/";
+            }}
+            onCategory={(value) => {
+              setCategory(value);
+              if (slug !== "") window.location.hash = "#/";
+            }}
+          />
         </div>
       )}
     </div>
